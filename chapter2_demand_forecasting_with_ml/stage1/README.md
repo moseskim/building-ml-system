@@ -1,47 +1,47 @@
 # Stage 1
 
-Stage1ではKubernetesクラスターで飲料品の需要予測モデルを学習、評価、推論します。
+`Stage1`에서는 Kubernetes 클러스터로 식료품 수요 예측 모델을 학습, 평가, 추론합니다.
 
-- 以下のコマンドはすべてローカル端末で実行します。
-- すべてのリソースはKubernetesクラスターにデプロイされ、起動します。
-- コマンドの実行はすべてLinuxおよびmacbookで稼働確認しています。
+- 다음 명령어는 모두 로컬 터미널에서 실행합니다.
+- 모든 리소스는 Kubernetes 클러스트에 배포되어, 기동합니다.
+- 명령어의 실행은 모두 Linux 및 macbook에서 기동을 확인했습니다.
 
 
 ## Requirements
 
 - [Docker Engine](https://docs.docker.com/engine/install/)
-- [Kubernetes](https://kubernetes.io/ja/)
-  - Kubernetesクラスターではノードの合計で12cpu以上, 48GB以上のメモリが必要になります。
-- makeコマンドの実行環境
-- [kubectl](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)の実行環境
-  - kubectlは[公式ドキュメント](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)からインストールしてください。
-- [argo cli](https://github.com/argoproj/argo-workflows/releases)の実行環境
-  - argo cliは[公式ドキュメント](https://github.com/argoproj/argo-workflows/releases)からインストールしてください。
+- [Kubernetes](https://kubernetes.io/ko/)
+  - Kubernetes 클러스터에서는 노드 합계로 12cpu 이상, 48GB 이상의 메모리가 필요합니다.
+- make 명령어의 실행 환경
+- [kubectl](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)의 실행 환경
+  - kubectl은 [공식 문서](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)를 참조해서 설치하기 바랍니다.
+- [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
+  - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조해서 설치하기 바랍니다.
 
 ## Components
 
-- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 機械学習の学習結果を管理するサーバ。
-- [PostgreSQL database](https://www.postgresql.org/): 飲料品の販売実績およびMLflowのデータを保存するデータベース。
-- BI: [streamlit](https://streamlit.io/)で構築するBI環境。
-- [Argo Workflows](https://argoproj.github.io/argo-workflows/): ワークフローの実行環境。
-- データ登録ジョブ: 定期的に販売実績データを登録するジョブ。Argo Workflowsでジョブとして実行される。
-- 飲料品需要予測ジョブ: 定期的に飲料品の需要を予測する機械学習モデルを学習し、推論するジョブ。Argo Workflowsでジョブとして実行される。
+- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝의 학습 결과를 관리하는 서버.
+- [PostgreSQL database](https://www.postgresql.org/): 식료품의 판매 실적 및 MLflow의 데이터를 저장하는 데이터베이스.
+- BI: [streamlit](https://streamlit.io/)으록 구축하는 BI 환경.
+- [Argo Workflows](https://argoproj.github.io/argo-workflows/): 워크플로 실행 환경.
+- 데이터 등록 잡: 정기적으로 판매 실적 데이터를 등록하는 잡. Argo Workflows에서 잡으로 실행된다.
+- 식료품 수요 예측 잡: 정기적으로 식료품의 수요를 예측하는 머신러닝 모델을 학습하고, 추론하는 잡. Argo Workflows에서 잡으로 실행된다.
 
 ## Getting started
 
-### 1. Dockerイメージのビルド
+### 1. Docker 이미지 빌드
 
-Dockerイメージをビルドします。
+Docker 이미지를 빌드합니다.
 
-- ビルドコマンドは `make build_all` です。
-- なお、ビルド済みのDockerイメージは以下に用意されています。
+- 빌드 명령은 `make build_all`입니다.
+- 빌드를 완료한 Docker 이미지는 다음에서 제공됩니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
-  - `make pull_all` でDockerイメージを取得することができます。
+  - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker buildのログ</summary>
+<details> <summary>Docker build의 로그</summary>
 
 ```sh
-# Dockerイメージのビルド
+# Docker 이미지 빌드
 $ make build_all
 docker build \
 		--platform x86_64 \
@@ -142,19 +142,19 @@ Use 'docker scan' to run Snyk tests against images to find vulnerabilities and l
 
 </details>
 
-### 2. 環境構築
+### 2. 환경 구축
 
-- Kubernetesクラスターに飲料品需要予測の実行環境を構築します。
-- Kubernetesクラスターには以下を構築します。
-  - data namespace: PostgreSQL databaseをデプロイ。
-  - mlflow namespace: MLflow Tracking Serverをデプロイ。
-  - argo namespace: Argo Workflowsをデプロイ。
-  - beverage-sales-forecasting namespace: 初期データ登録ジョブおよびstreamlitによるBI環境をデプロイ。
+- Kubernetes 클러스터에 식료품 수요 예측 실행 환경을 구축합니다.
+- Kubernetes 클러스터에 다음을 구축합니다.
+  - data namespace: PostgreSQL database를 배포.
+  - mlflow namespace: MLflow Tracking Server를 배포.
+  - argo namespace: Argo Workflows를 배포.
+  - beverage-sales-forecasting namespace: 초기 데이터 등록 잡 및 streamlit을 사용한 BI 환경을 배포.
 
-<details> <summary>Kubernetesクラスターへの環境構築のログ</summary>
+<details> <summary>Kubernetes 클러스터에서의 환경 구축 로그</summary>
 
 ```sh
-# Kubernetesクラスターに初期設定を導入
+# Kubernetes 클러스터에 초기 설정 도입
 $ make initialize_deployment
 kubectl apply -f /Users/user/book2/building-ml-system/chapter2_demand_forecasting_with_ml/stage1/infrastructure/manifests/kube_system/pdb.yaml
 poddisruptionbudget.policy/event-exporter-gke created
@@ -164,7 +164,7 @@ poddisruptionbudget.policy/kube-dns created
 poddisruptionbudget.policy/glbc created
 poddisruptionbudget.policy/metrics-server created
 
-# 各種リソースをデプロイ
+# 각종 리소스 배포
 $ make deploy_base
 kubectl apply -f /Users/user/book2/building-ml-system/chapter2_demand_forecasting_with_ml/stage1/infrastructure/manifests/argo/namespace.yaml
 namespace/argo created
@@ -243,7 +243,7 @@ kubectl apply -f /Users/user/book2/building-ml-system/chapter2_demand_forecastin
 deployment.apps/mlflow created
 service/mlflow created
 
-# 用意されたnamespace
+# 제공되는 namespace
 $ kubectl get ns
 NAME                         STATUS   AGE
 argo                         Active   35s
@@ -255,7 +255,7 @@ kube-public                  Active   7m54s
 kube-system                  Active   7m54s
 mlflow                       Active   27s
 
-# argo namespaceのリソース
+# argo namespace의 리소스
 $ kubectl -n argo get pods,deploy,svc
 NAME                                                         READY   STATUS      RESTARTS      AGE
 pod/argo-server-89b4c97d-5m5pz                               1/1     Running     3 (14m ago)   15m
@@ -279,7 +279,7 @@ service/minio                         ClusterIP   10.36.11.94    <none>        9
 service/postgres                      ClusterIP   10.36.9.163    <none>        5432/TCP   15m
 service/workflow-controller-metrics   ClusterIP   10.36.8.100    <none>        9090/TCP   15m
 
-# beverage-sales-forecasting namespaceのリソース
+# beverage-sales-forecasting namespace의 리소스
 $ kubectl -n beverage-sales-forecasting get pods,deploy,svc
 NAME                      READY   STATUS    RESTARTS   AGE
 pod/bi-869fd59cdd-wcrh8   1/1     Running   0          42s
@@ -290,7 +290,7 @@ deployment.apps/bi   1/1     1            1           42s
 NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
 service/bi   ClusterIP   10.36.12.92   <none>        8501/TCP   42s
 
-# data namespaceのリソース
+# data namespace의 리소스
 $ kubectl -n data get pods,deploy,svc
 NAME                           READY   STATUS    RESTARTS   AGE
 pod/postgres-d79b99548-glqzz   1/1     Running   0          47s
@@ -301,7 +301,7 @@ deployment.apps/postgres   1/1     1            1           47s
 NAME               TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
 service/postgres   ClusterIP   10.36.2.224   <none>        5432/TCP   47s
 
-# mlflow namespaceのリソース
+# mlflow namespace의 리소스
 $ kubectl -n mlflow get pods,deploy,svc
 NAME                          READY   STATUS    RESTARTS   AGE
 pod/mlflow-656f9cd66b-dmk6j   1/1     Running   0          15m
@@ -316,12 +316,12 @@ service/mlflow   ClusterIP   10.36.5.157   <none>        5000/TCP   15m
 
 </details>
 
-### 3. Kubernetesクラスターに構築した環境への接続
+### 3. Kubernetes 클러스터에 구축한 환경에 접속
 
-- Kubernetesクラスターに構築したBI環境、MLflow Tracking Server、Argo Workflowsの各コンソールにはport-forwardを実行して接続します。
-- port-forwardのコマンドは[./infrastructure/port_forward.sh](./infrastructure/port_forward.sh)に用意しています。
+- Kubernets 클러스트에 구축한 BI 환경, MLflow Tracking Server, Argo Workflows의 각 콘솔에는 `port-forward`를 실행해서 접속합니다.
+- `port-forward` 명령은 [`./infrastructure/port_forward.sh`](./infrastructure/port_forward.sh)에서 제공합니다.
 
-<details> <summary>Kubernetesクラスターの各種リソースに接続するport-forward</summary>
+<details> <summary>Kubernetes 클러스터의 각종 리소스에 접속하는 port-forward</summary>
 
 ```sh
 # ./infrastructure/port_forward.shの内容
@@ -332,10 +332,10 @@ kubectl -n beverage-sales-forecasting port-forward service/bi 8501:8501 &
 kubectl -n mlflow port-forward service/mlflow 5000:5000 &
 kubectl -n argo port-forward service/argo-server 2746:2746 &
 
-# port-forwardを実行
+# port-forward를 실행
 $ ./infrastructure/port_forward.sh
 
-# port-forwardが起動していることを確認
+# port-forward가 기동하는 것을 확인
 $ ps aux | grep port-forward
 user     52203   0.2  0.1 409281040  42448 s003  S     3:06PM   0:00.15 kubectl -n beverage-sales-forecasting port-forward service/bi 8501:8501
 user     52750   0.0  0.0 407963504    624 s003  R+    3:08PM   0:00.00 grep port-forward
@@ -345,17 +345,17 @@ user     52204   0.0  0.1 409278704  45680 s003  S     3:06PM   0:00.20 kubectl 
 
 </details>
 
-### 4. 学習結果の実行
+### 4. 학습 결과 실행\
 
-- 飲料品の需要予測機械学習はArgo Workflowsに定期実行するジョブとして登録します。
-- 接続するためには事前に`port-forward`する必要があります。
-- なお、[env](./env)に記載されいてる環境変数をコンソールに登録する必要があります。
-- ジョブの登録コマンドは `make deploy_job` です。
+- 식료품의 수요 예측 머신러닝은 Argo Workflows에 정기 실행되는 잡으로 등록합니다.
+- 접속하기 위해 사전에 `port-forward`를 해야 합니다.
+- [`env`](./env)에 기재되어 있는 환경 변수를 콘솔에 등록해야 합니다.
+- 잡의 등록 명령어는 `make deploy_job`입니다.
 
-<details> <summary>学習ジョブの登録</summary>
+<details> <summary>학습 잡 등록</summary>
 
 ```sh
-# コンソールに登録されている環境変数（一部）
+# 콘솔에 등록되어 있는 환경 변수(일부)
 $ env
 ARGO_SERVER=127.0.0.1:2746
 ARGO_HTTP1=true
@@ -363,7 +363,7 @@ ARGO_SECURE=true
 ARGO_INSECURE_SKIP_VERIFY=true
 ARGO_NAMESPACE=argo
 
-# ジョブの登録
+# 잡 등록
 $ make deploy_job
 kubectl apply -f ~/building-ml-system/chapter2_demand_forecasting_with_ml/stage1/infrastructure/manifests/beverage_sales_forecasting/namespace.yaml
 namespace/beverage-sales-forecasting unchanged
@@ -395,58 +395,63 @@ NextScheduledTime:             Sun Jul 17 15:10:00 +0900 (6 seconds from now) (a
 
 </details>
 
-- 登録されたジョブはArgo WorkflowsのWebコンソールで確認することができます。
-- 接続するためには事前に`port-forward`する必要があります。
+- 등록된 잡은 Argo Workflows의 웹 콘솔에서 확인할 수 있습니다.
+- 접속하기 위해 사전에 `port-forward`를 해야 합니다.
 - URL: https://localhost:2746/
-  - なお、上記URLにログインする際、以下のような画面が出る場合があります。これはHTTPSの証明書がlocalhostに対して発行されないことが原因です。`localhostにアクセスする（安全ではありません）`でArgo WorkflowsのWebコンソールを開きます。
+  - 그리고 위 URL에 로그인할 때, 다음과 같은 화면이 나타나는 경우가 있습니다. 이것은 HTTPS 인증서가 localhost에 대해 발행되어 있지 않기 때문입니다. `localhost`에 접근한다(안전하지 않습니다)`로 Argo Workflows의 웹 콘솔을 엽니다.
 
 ![img](images/argo_localhost.png)
 
-Argo Workflowsに登録されたcron一覧
+Argo Workflows에 등록된 cron 리스트
 
 ![img](images/argo_crons.png)
 
-Data registrationの内容。
-- `*/10 * * * *`という設定で、10分に一度実行する設定になっています。本来であれば週次で実行するジョブですが、デモのため10分間隔で実行しています。
+Data registration의 내용.
+
+- `*/10 * * * *`이라는 설정으로 10분마다 1번씩 실행합니다. 원래대로라면 주마다 실행하는 잡이지만, 데모를 위해 10분 간격으로 실행합니다.
 
 ![img](images/argo_data_registration_cron.png)
 
-Data registrationジョブの実行。
+Data registration 잡 실행.
 
 ![img](images/argo_data_registration_job.png)
 
-Data registrationジョブのログ
+Data registration 잡 로그.
 
 ![img](images/argo_data_registration_log.png)
 
-### 5. 需要予測の記録
+### 5. 수요 예측 기록
 
-- 需要予測の学習記録はMLflow tracking serverおよびBI環境から閲覧することができます。
-- 各コンソールに接続するためには事前に`port-forward`する必要があります。
+- 수요 예측의 학습 기록은 MLflow Tracking Server 및 BI 환경에서 열람할 수 있습니다.
+- 각 콘솔에 접속하기 위해서는 사전에 `port-forward`를 해야 합니다.
 
 #### MLflow tracking server
 
 - URL: http://localhost:5000/
 
-トップページ
+톱 페이지
+
 ![img](images/mlflow_top.png)
 
-学習時のパラメータ
+학습 시의 파라미터
+
 ![img](images/mlflow_params.png)
 
 #### BI by streamlit
 
 - URL: http://localhost:8501
 
-販売実績
+판매 실적
+
 ![img](images/bi_sales.png)
 
-販売実績対推論結果の評価
+판매 실적 대 추론 결과의 평가
+
 ![img](images/bi_evaluations.png)
 
-### 6. 環境の削除
+### 6. 환경 삭제
 
-構築した環境は `make delete_namespaces` で削除することができます。
+구축한 환경은 `make delete_namespaces`로 삭제할 수 있습니다.
 
 ```sh
 $ make delete_namespaces
