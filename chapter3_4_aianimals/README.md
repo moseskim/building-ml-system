@@ -1,9 +1,8 @@
-# Chapter3 and 4 AIAnimals
+# 3, 4장 AIAnimals
 
-本READMEはAIAnimalsという架空のスマホアプリおよびバックエンド基盤を構築し、活用する方法を説明します。
-スマホはAndroidで開発しています。スマホアプリを起動するためにはAndroid Studioが必要です。
-バックエンド基盤はDocker composeまたはKubernetesクラスターで起動することができます。
-ただしDocker composeで起動する場合、機械学習関連のコンポーネントを起動することができないので、ご注意ください。
+이 `README`는 AIAnimals라는 가공의 스마트폰 애플리케이션 및 백엔드 인프라스트럭처를 구축 및 활용하는 방법을 설명합니다.
+
+스마트폰은 Android로 개발했습니다. 스마트폰 애플리케이션을 기동하기 위해서는 Android Studio가 필요합니다. 백엔드 인프라스트럿처는 Docker compose 또는 Kubernetes 클러스터로 기동할 수 있습니다. 단, Docker compose로 기동하는 경우, 머신러닝 관련 컴포넌트를 기동시킬 수 없으므로 주의하기 바랍니다.
 
 ## Components
 
@@ -14,33 +13,32 @@
 - Android Studio
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Docker compose](https://docs.docker.jp/compose/install.html)
-- [Kubernetes](https://kubernetes.io/ja/)
-  - Kubernetesクラスターではノードの合計で48cpu以上, 128GB以上のメモリが必要になります。
-- makeコマンドの実行環境
-- [kubectl](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)の実行環境
-  - kubectlは[公式ドキュメント](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)からインストールしてください。
-- [argo cli](https://github.com/argoproj/argo-workflows/releases)の実行環境
-  - argo cliは[公式ドキュメント](https://github.com/argoproj/argo-workflows/releases)からインストールしてください。
+- [Kubernetes](https://kubernetes.io/ko/)
+  - Kubernetes 클러스터는 노드 합계 48cpu이상, 128GB 이상의 메모리가 필요합니다.
+- make 명령어 실행 환경
+- [kubectl](https://kubernetes.io/ko/docs/tasks/tools/#kubectl)의 실행 환경
+  - kubectl은 [공식 문서](https://kubernetes.io/ko/docs/tasks/tools/#kubectl)를 참조하여 설치하기 바랍니다.
+- [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
+  - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조하여 설치하기 바랍니다.
 
 
-## Getting started ~ バックエンド共通 ~
+## Getting started ~ 백엔드 공통 ~
 
-バックエンドはDocker composeまたはKubernetesクラスターで稼働させることができます。
-以下ではDocker composeおよびKubernetesクラスター共通の手順を説明します。
+백엔드는 Docker compose 또는 Kubermetes 클러스터에서 기동시킬 수 있습니다.  다음에서는 Docker compose 및 Kubernetes 클러스터 공통 순서를 설명합니다.
 
-### 注意点
+### 주의점
 
-- バックエンドで起動するデータレイヤー（PostgreSQLデータベース、RabbitMQ、Redis）は永続化していません。そのため、コンテナの再起動等によってデータが消える可能性があります。本プログラムはサンプルシステムとしてAIAnimalsを稼働させることを目的としています。本番システムで同様のデータレイヤーをデプロイする際はデータを永続化する構成で構築するようにご注意ください。
+- 백엔드에서 기동하는 데이털 레이어(Postgres 데이터베이스, RabbitMQ, Redis)는 영속화하지 않습니다. 따라서, 컨테이너를 재기동하면 데이터가 사라질 가능성이 있습니다. 본 프로그램은 샘플 시스템으로서 AIAnimals를 기동시키는 것을 목적으로 합니다. 프러덕션 시스템에서 같은 데이터 레이어를 배포할 때는 데이터를 영속화하는 구성으로 구축해야 하므로 주의하기 바랍니다.
 
-### 1. Dockerイメージのビルド
+### 1. Docker 이미지 빌드
 
-- バックエンドで使うDockerイメージをビルドします。
-- ビルドコマンドは `make build_all` です。
-- なお、ビルド済みのDockerイメージは以下に用意されています。
+- 백엔드에서 사용하는 Docker 이미지를 빌드합니다.
+- 빌드 명령은 `make build_all`입니다.
+- 그리고 빌드를 완ㅇ료한 Docker 이미지는 다음에서 제공합니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
-  - `make pull_all` でDockerイメージを取得することができます。
+  - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker buildのログ</summary>
+<details> <summary>Docker build 로그</summary>
 
 ```sh
 $ make build_all
@@ -511,16 +509,13 @@ Use 'docker scan' to run Snyk tests against images to find vulnerabilities and l
 
 ## Getting started ~ Docker compose ~
 
-Docker composeでバックエンドを起動する方法を説明します。
-なお、Docker composeではAPIおよび検索のためのリソースのみを用意しています。
-機械学習のためのリソース（Argo Workflows、違反検知システム、機械学習による検索システム）は起動できません。
+Docker compose로 백엔드를 기동시키는 방법을 설명합니다. Docker compose에서는 API 및 검색을 위한 리소스만 제공합니다. 머신러닝을 위한 리소스(Argo Workflows, 위반 감지 시스템, 머신러닝을 이용한 검색 시스템)은 기동할 수 없습니다.
 
-### 1. バックエンドの起動
+### 1. 백엔드 기동
 
-Docker composeでバックエンドを起動します。
-起動コマンドは`make up`です。
+Docker compose로 백엔드를 기동합니다. 기동 명령어는 `make up`입니다.
 
-<details> <summary>Docker composeの起動</summary>
+<details> <summary>Docker compose 기동</summary>
 
 ```sh
 $ make up
@@ -540,9 +535,9 @@ Creating api                   ... done
 
 </details>
 
-Docker composeによって起動した各種Dockerコンテナを確認します。
+Docker compose을 사용해 기동한 각종 Docker 컨테이너를 확인합니다.
 
-<details> <summary>起動したDockerコンテナ</summary>
+<details> <summary>기동한 Docker 컨테이너</summary>
 
 ```sh
 $ docker ps -a
@@ -559,19 +554,19 @@ e151b271203d   redis:latest                                               "docke
 
 </details>
 
-起動したコンテナの役割は以下のとおりです。
+기동한 컨테이너의 역할은 다음과 같습니다.
 
-- postgres: データベース
-- es: ElasticSearchによる検索基盤
-- kibana: ElasticSearchのためのコンソール
-- redis: Redisによるキャッシュ基盤
-- rabbitmq: RabbitMQによるメッセージ基盤
-- initial_data_registry: 初期のデータ登録バッチ（データ登録後停止）
-- search_registry: 検索データの登録バッチ
+- postgres: 데이터베이스
+- es: ElasticSearch을 사용한 검색 인프라스트럭처
+- kibana: ElasticSearch을 위한 콘솔
+- redis: Redis를 사용한 캐시 인프라스트럭처
+- rabbitmq: RabbitMQ을 사용한 메시지 인프라스트럭처
+- initial_data_registry: 초기 데이터 등록 배치(데이터 등록 후 정지)
+- search_registry: 검색 데이터 등록 배치
 
-API等による検索を使用するためにはデータベースにデータが登録されている必要があります。データの登録は`initial_data_registry`が実行します。データの登録ログは以下のとおりです。
+API등을 통한 검색을 사용하기 위해서는 데이터베이스에 데이터가 등록되어 있어야 합니다. 데이터 등록은 `initial_data_registiry`에서 실행됩니다. 데이터 등록 로그는 다음과 같습니다.
 
-<details> <summary>initial_data_registryコンテナのログ</summary>
+<details> <summary>initial_data_registry 컨테이너 로그</summary>
 
 ```sh
 $ docker logs initial_data_registry
@@ -605,9 +600,9 @@ $ docker logs initial_data_registry
 
 </details>
 
-ElasticSearchへの検索対象データの登録は`search_registry`が実行します。`search_registry`による検索データの登録ログは以下のとおりです。
+ElasticSearch로의 검색 대상 데이터 등록은 `search_registry`에서 실행됩니다. `search_registry`를 통한 검색 데이터 등록 로그는 다음과 같습니다.
 
-<details> <summary>search_registryコンテナのログ</summary>
+<details> <summary>search_registry 컨테이너 로그</summary>
 
 ```sh
 $ docker logs search_registry
@@ -629,21 +624,19 @@ $ docker logs search_registry
 
 </details>
 
-これでDocker composeによるバックエンドを起動することができました。
-バックエンドAPIへのアクセスはSwaggerを使用することが可能です。
+이것으로 Docker compose를 사용한 백엔드를 기동할 수 있습니다. 백엔드 API에 대한 접근은 Swagger를 사용할 수 있습니다. 
 
 - URL: http://localhost:8000/v0/docs#/
 
 ![img](images/api_swagger.png)
 
-バックエンドAPIへはAndroidによるスマホアプリがアクセスします。
-Androidスマホアプリの起動方法をご参照ください。
+백엔드 API로는 Android를 사용한 스마트폰 애플리케이션이 접근합니다. Android 스마트폰 애픞리케이션 기동 방법을 참조하십시오.
 
-### 2. 環境の削除
+### 2. 환경 삭제
 
-Docker composeで起動したバックエンドは `make down` で削除することができます。
+Docker compose로 기동한 백엔드는 `make down`으로 삭제할 수 있습니다.
 
-<details> <summary>Docker composeの停止</summary>
+<details> <summary>Docker compose 정지</summary>
 
 ```sh
 $ make down
@@ -670,25 +663,24 @@ Removing network aianimals
 
 </details>
 
-## Getting started ~ Kubernetesクラスター ~
+## Getting started ~ Kubernetes 클러스터 ~
 
-Kubernetesクラスターでバックエンドを起動する方法を説明します。
-Kubernetesクラスターでは機械学習を含めたすべての機能を起動することができます。
+Kubernetes 클러스터로 백엔드를 기동하는 방법을 설명합니다.
+Kubernetes 클러스터로는 머신러닝을 포함한 모든 기능을 기동할 수 있습니다.
 
-### 1. バックエンドの構築
+### 1. 백엔드 구축
 
-Kubernetesクラスターにバックエンド基盤を構築する手順を説明します。
-以下のコマンドを実行します。
-- `make initialize_deployment`: namespace等のデプロイ
-- `make deploy_infra`: インフラ系リソースのデプロイ
-- `make deploy_init`: 共通ツールのデプロイ
-- `make deploy_base`: APIおよびバッチのデプロイ
+Kubernetes 클러스터에 백엔드 인프라스트럭처를 구축하는 순서를 설명합니다. 다음 명령을 실행합니다.
+- `make initialize_deployment`: namespace 등의 배포
+- `make deploy_infra`: 인프라스트럭처 계열 리소스 배포
+- `make deploy_init`: 공통 도구 배포
+- `make deploy_base`: API 및 배치 배포
 
 
 <details> <summary>Kubernetesクラスターにバックエンドを構築</summary>
 
 ```sh
-# 各種namespaceのデプロイ
+# 각종 namespace 배포
 $ make initialize_deployment
 kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/kube_system/pdb.yaml
 poddisruptionbudget.policy/event-exporter-gke configured
@@ -720,7 +712,7 @@ kubectl -n aianimals \
 		--from-file=infrastructure/secrets/secret.key
 secret/auth-secret created
 
-# インフラ系リソースのデプロイ
+# 인프라스트럭처 계열 리소스 배포
 $ make deploy_infra
 kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/data/postgres.yaml && \
 	kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/data/redis.yaml && \
@@ -822,7 +814,7 @@ configmap/grafana-dashboards created
 deployment.apps/grafana created
 service/grafana created
 
-# 共通ツールのデプロイ
+# 공통 도구 배포
 $ make deploy_init
 kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/mlflow/mlflow.yaml
 deployment.apps/mlflow created
@@ -834,7 +826,7 @@ kubectl apply \
 		-f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/aianimals/initial_data_registry.yaml
 job.batch/initial-data-registry created
 
-# APIおよびバッチのデプロイ
+# API 및 배치 배포
 $ make deploy_base
 kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/aianimals/api.yaml
 deployment.apps/api created
@@ -849,13 +841,12 @@ deployment.apps/animal-feature-registry-registration created
 
 </details>
 
-デプロイしたリソースの確認
+배포한 리소스 확인
 
-
-<details> <summary>デプロイしたKubernetesリソース一覧</summary>
+<details> <summary>배포한 Kubernetes 리소스 리스트</summary>
 
 ```sh
-# namespace一覧
+# namespace 리스트
 $ kubectl get ns
 NAME                  STATUS   AGE
 aianimals             Active   2m38s
@@ -872,7 +863,7 @@ monitoring            Active   2m37s
 search                Active   2m36s
 violation-detection   Active   2m36s
 
-# aianimals namespaceのリソース
+# aianimals namespace의 리소스
 $ kubectl -n aianimals get pods,deploy,svc,jobs
 NAME                                                        READY   STATUS      RESTARTS       AGE
 pod/animal-feature-registry-registration-589fd44b9f-v474j   1/1     Running     0              2m42s
@@ -892,7 +883,7 @@ service/api   ClusterIP   10.36.11.174   <none>        8000/TCP   2m42s
 NAME                              COMPLETIONS   DURATION   AGE
 job.batch/initial-data-registry   1/1           3m22s      3m39s
 
-# argo namespaceのリソース
+# argo namespace의 리소스
 $ kubectl -n argo get pods,deploy,svc
 NAME                                       READY   STATUS    RESTARTS        AGE
 pod/argo-server-89b4c97d-mknhn             1/1     Running   3 (4m4s ago)    4m24s
@@ -912,7 +903,7 @@ service/minio                         ClusterIP   10.36.13.115   <none>        9
 service/postgres                      ClusterIP   10.36.4.171    <none>        5432/TCP   4m24s
 service/workflow-controller-metrics   ClusterIP   10.36.1.137    <none>        9090/TCP   4m24s
 
-# data namespaceのリソース
+# data namespace의 리소스
 $ kubectl -n data get pods,deploy,svc
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/postgres-798c775487-zpnnh   1/1     Running   0          4m55s
@@ -930,7 +921,7 @@ service/rabbitmq-amqp   ClusterIP   10.36.13.250   <none>        5672/TCP    4m5
 service/rabbitmq-http   ClusterIP   10.36.3.135    <none>        15672/TCP   4m54s
 service/redis           ClusterIP   10.36.0.79     <none>        6379/TCP    4m55s
 
-# elastic-search namespaceのリソース
+# elastic-search namespace의 리소스
 $ kubectl -n elastic-search get pods,deploy,svc
 NAME                              READY   STATUS    RESTARTS   AGE
 pod/elastic-search-es-default-0   1/1     Running   0          4m50s
@@ -946,7 +937,7 @@ service/elastic-search-es-internal-http   ClusterIP   10.36.6.238   <none>      
 service/elastic-search-es-transport       ClusterIP   None          <none>        9300/TCP   4m53s
 service/kibana-kb-http                    ClusterIP   10.36.2.166   <none>        5601/TCP   4m53s
 
-# elastic-system namespaceのリソース
+# elastic-system namespace의 리소스
 $ kubectl -n elastic-system get pods,deploy,svc
 NAME                     READY   STATUS    RESTARTS   AGE
 pod/elastic-operator-0   1/1     Running   0          5m17s
@@ -954,7 +945,7 @@ pod/elastic-operator-0   1/1     Running   0          5m17s
 NAME                             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
 service/elastic-webhook-server   ClusterIP   10.36.14.120   <none>        443/TCP   5m17s
 
-# mlflow namespaceのリソース
+# mlflow namespace의 리소스
 $ kubectl -n mlflow get pods,deploy,svc
 NAME                          READY   STATUS    RESTARTS   AGE
 pod/mlflow-558b56bdc6-l2xj6   1/1     Running   0          4m45s
@@ -966,7 +957,7 @@ deployment.apps/mlflow   2/2     2            2           4m45s
 NAME             TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
 service/mlflow   ClusterIP   10.36.2.96   <none>        5000/TCP   4m45s
 
-# monitoring namespaceのリソース
+# monitoring namespace의 리소스
 $ kubectl -n monitoring get pods,deploy,svc
 NAME                              READY   STATUS    RESTARTS   AGE
 pod/grafana-5d5cf8c8c9-grlcr      1/1     Running   0          5m21s
@@ -986,23 +977,22 @@ service/pushgateway   ClusterIP   10.36.14.110   <none>        9091/TCP   5m22s
 
 </details>
 
-### 2. 違反検知システムのデプロイ
+### 2. 위반 감지 시스템 배포
 
-違反検知システムを構築します。
-違反検知システムは以下で構成されています。
-- registry: 違反をデータベースに登録する非同期処理基盤
-- no-animal-violation-proxy: 「動物が写っていない」違反検知のためのプロキシ
-- no-animal-violation-serving: 「動物が写っていない」違反検知の推論器
-- violation-detection-portal: 違反検知結果を閲覧、管理するポータルサイト
+위반 감지 시스템을 구축합니다. 위반 감지 시스템은 다음과 같이 구성됩니다.
+- registry: 위반을 데이터베이스에 등록하는 비동기 인프라스트럭처
+- no-animal-violation-proxy: '동물이 찍혀있지 않다'는 위반을 감지하기 위한 프록시
+- no-animal-violation-serving: '동물이 찍혀있지 않다'는 위반 감지용 추론기
+- violation-detection-portal: 위반 감지 결과를 열람, 관리하는 포털 사이트
 
-no-animal-violation-servingで稼働する
+no-animal-violation-serving으로 기동한다.
+。
+위반 감지 시스템은 `make deploy_violation_detections`로 구축할 수 있습니다.
 
-違反検知システムは `make deploy_violation_detections` で構築することができます。
-
-<details> <summary>違反検知システムの構築</summary>
+<details> <summary>위반 감시 시스템 구축</summary>
 
 ```sh
-# 違反検知システムの構築
+# 위반 감지 시스템 구축
 $ make deploy_violation_detections
 kubectl apply \
 		-f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/violation_detection/no_animal_violation_serving.yaml
@@ -1047,29 +1037,28 @@ service/violation-detection-portal    ClusterIP   10.36.0.88    <none>        95
 
 </details>
 
-なお、違反検知システムの機械学習モデルはArgo Workflowsで定期的に学習し、学習完了後はno-animal-violation-servingを自動で更新します。
+위반 감지 시스템의 머신러닝 모델은 Argo Workflows에서 정기적으로 학습하고, 학습 완료 후에는 no-animal-violation-serving을 자동으로 업데이트합니다.
 
-### 3. 機械学習による検索システムのデプロイ
+### 3. 머신러닝을 사용한 검색 시스템 배포
 
-機械学習による検索システムを構築する方法を説明します。
-検索システムでは以下で機械学習を活用しています。
+머신러닝을 사용한 검색 시스템을 구축하는 방법을 설명합니다. 검색 시스템에서는 다음과 같이 머신러닝을 활용합니다.
 
-- ランク学習による検索結果の並べ替え
-- 画像による検索
+- 순위 학습을 사용한 검색 결과 정렬
+- 이지를 사용한 검색
 
-それぞれのリソースは以下のとおりです。
+각각의 리소스는 다음과 같습니다.
 
-- ランク学習による検索結果の並べ替え
-  - learn-to-rank-lgbm-ranker: LightGBM Rankerによるランク学習API
-  - learn-to-rank-lgbm-regression: LightGBM Regressionによるランク学習API
-  - learn-to-rank-ab-test-proxy: ランク学習APIへのABテストプロキシ
-- 画像による検索
-  - similar-image-search-proxy: 画像検索推論器へのプロキシ
-  - similar-image-search-serving: 画像検索推論器
+- 순위 학습을 사용한 검색 결과 정렬
+  - learn-to-rank-lgbm-ranker: LightGBM Ranker를 사용한 순위 학습 API
+  - learn-to-rank-lgbm-regression: LightGBM Regression를 사용한 순위 학습 API
+  - learn-to-rank-ab-test-proxy: 순위 API에 대한 A/B 테스트 프록시
+- 이미지를 사용한 검색
+  - similar-image-search-proxy: 이미지 검색 추론기에 대한 프록시
+  - similar-image-search-serving: 이미지 검색 추론기
 
-機械学習による検索システムは `make deploy_searches` でデプロイすることができます。
+머신러닝을 사용한 검색 시스템은 `make deploy_searches`로 배포할 수 있습니다.
 
-<details> <summary>検索システムの構築</summary>
+<details> <summary>검색 시스템 구축</summary>
 
 ```sh
 $ make deploy_searches
@@ -1096,7 +1085,7 @@ deployment.apps/similar-image-search-proxy created
 service/similar-image-search-proxy created
 ```
 
-構築した検索システムを確認します。
+구축한 검색 시스템을 확인합니다.
 
 ```sh
 $ kubectl -n search get pods,deploy,svc
@@ -1125,11 +1114,11 @@ service/similar-image-search-serving    ClusterIP   10.36.12.250   <none>       
 </details>
 
 
-### 4. 各リソースへの接続
+### 4. 각 리소스로의 접속
 
-Kubernetesクラスターにデプロイした各種リソースのうち、Webコンソール等のインターフェイスを持っているものは `port-forward` で接続することができます。
+Kubernetes 클러스터에 배포한 각종 리소스 중 웹 콘솔 등의 인터페이스를 가진 리소스에는 `port-forward`로 접속할 수 있습니다.
 
-<details> <summary>port-forwardで各種リソースに接続</summary>
+<details> <summary>port-forward로 각 리소스에 접속</summary>
 
 ```sh
 $ cat infrastructure/port_forward.sh
@@ -1165,13 +1154,13 @@ shibuiyusuke     78692   0.0  0.0 408628368   1648 s004  S+    6:01PM   0:00.00 
 #### ElasticSearch(Kibana)
 
 - URL: https://localhost:5601/login
-- 以下でログインできます。
+- 다음으로 로그인할 수 있습니다.
   - user: elastic_user
   - password: password
 
 ![img](images/kibana_login.png)
 
-ログイン後
+로긍 니후
 
 ![img](images/kibana_top.png)
 
@@ -1187,34 +1176,33 @@ shibuiyusuke     78692   0.0  0.0 408628368   1648 s004  S+    6:01PM   0:00.00 
 
 ![img](images/mlflow_top.png)
 
-#### 違反検知ポータル
+#### 위반 감지 포털
 
-違反検知のためのポータルサイトは[streamlit](https://streamlit.io/)で構築してあります。
+위반 감지를 위한 포털 사이트는 [streamlit](https://streamlit.io/)로 구축되어 있습니다.
 
 - URL: http://localhost:9501/
 
 ![img](images/streamlit_violation.png)
 
 
-### 5. 機械学習の起動
+### 5. 머신러닝 기동
 
-機械学習のモデルはArgo Workflowsによって定期的に学習します。学習完了後には自動的にリリースされます。
-Argo Workflowsの定期実行ジョブを登録する方法を説明します。
+머신러닝 모델은 Argo Workflows를 사용해 정기적으로 학습합니다. 학습 완료 후에는 자동으로 릴리스됩니다. Argo Workflows의 정기 실행 잡을 등록하는 방법에 관해 설명합니다.
 
-- Argo Workflowsへ接続するためには事前に`port-forward`する必要があります。
-- なお、[env](./env)に記載されいてる環境変数をコンソールに登録する必要があります。
+- Argo Workflows로 접속하기 위해서는 사전에 `port-foward`를 해야 합니다.
+- 그리고 [`env`](./env)에 기재되어 있는 환경 변수를 콘솔에 등록해야 합니다.
 
-Argo Workflowsには以下のジョブが定期実行として登録されます。
+Argo Workflows에서는 다음 잡이 정기적으로 실행되도록 등록되어 있습니다.
 
-- animal-feature-registry-train: 検索対象データの特徴量生成およびランク学習およびリリース
-- search-similar-image-search-pipeline: 画像による検索のための学習およびリリース
-- violation-detection-no-animal-violation-train: 「動物が写っていない」違反検知の学習およびリリース
-- similar-word-registry-pipeline: 類似語辞書作成バッチ
+- `animal-feature-registry-train`: 검색 대상 데이터의 특징량 생성 및 순위 학습 및 릴리스
+- `search-similar-image-search-pipeline`: 이미지를 사용한 검색을 위한 학습 및 릴리스
+- `violation-detection-no-animal-violation-train`: '동물이 찍혀있지 않다' 위반 감지 학습 및 릴리스
+- `similar-word-registry-pipeline`: 유사어 사전 작성 배치
 
-<details> <summary>Argo Workflowsへのジョブの登録</summary>
+<details> <summary>Argo Workflows로의 잡 등록</summary>
 
 ```sh
-# コンソールに登録されている環境変数（一部）
+# 콘솔에 등록되어 있는 환경 변수(일부)
 $ env
 ARGO_SERVER=127.0.0.1:2746
 ARGO_HTTP1=true
@@ -1222,7 +1210,7 @@ ARGO_SECURE=true
 ARGO_INSECURE_SKIP_VERIFY=true
 ARGO_NAMESPACE=argo
 
-# ジョブの登録
+# 잡 등록
 $ make register_argo
 argo cron create infrastructure/manifests/argo/workflow/learn_to_rank_train.yaml
 Handling connection for 2746
@@ -1269,17 +1257,16 @@ NextScheduledTime:             Mon Jul 18 21:00:00 +0900 (1 day from now) (assum
 </details>
 
 
-ジョブは定期的に実行されます。
-ジョブの実行履歴はArgo Workflowsのコンソールで以下のように確認することができます。
+잡은 정기적으로 실행됩니다.
+잡의 실행 이력은 Argo Workflows의 콘솔에서 다음과 같이 확인할 수 있습니다.
 
 ![img](images/argo_top.png)
 
+### 6. 환경 삭제
 
-### 6. 環境の削除
+Kubernetes 클러스터에 구축한 환경은 `make delete_namespaces`로 삭제할 수 있습니다.
 
-Kubernetesクラスターに構築した環境は `make delete_namespaces` で削除することができます。
-
-<details> <summary>Kubernetesクラスターに構築した環境の削除</summary>
+<details> <summary>Kubernetes 클러스터에 구축한 환경 삭제</summary>
 
 ```sh
 $ make delete_namespaces
@@ -1305,66 +1292,65 @@ namespace "aianimals" deleted
 
 </details>
 
-## Getting started ~ AndroidスマホアプリAIAnimalsの起動 ~
+## Getting started ~ Android 스마트폰 애플리케이션 AIAnimals 기동 ~
 
-AndroidスマホアプリAIAnimalsの起動方法を説明します。
-起動はAndroid Studioで実行します。
-Android Studioでは開発中のアプリを実行するためのエミュレータが用意されており、AIAnimalsもエミュレータで稼働確認します。
+Android 스마트폰 애플리케이션 AIAnimals의 기동 방법을 설명합니다.
+기동은 Andorid Studio에서 실행합니다.
+Android Studio에서는 개발 중인 애플리케이션을 실행하기 위한 에뮬레이터를 제공하며, AIAnimal도 에뮬레이터에서 기동을 확인합니다.
 
-まずはAndroid Studioを開き、AIAnimalsプロジェクトを選択します。
+먼저 Android Studio를 열고 AIAnimals 프로젝트를 선택합니다.
 
 ![img](images/android_open.png)
 
-続いてエミュレータをインストールします。今回はPixel5をエミュレータとして使います。Android Studio上部の`No Devices`のプルダウンから`Device Manager`を選択します。
+계속해서 에뮬레이터를 설치합니다. 여기에서는 Pixel5를 에뮬레이터로 사용합니다. Android Studio 위쪽의 `No Devices` 드롭다운에서 `Device Manager`를 선택합니다.
 
 ![img](images/android_device_manager.png)
 
-エミュレータの作成画面に遷移するので、`Create Device`を選択し、`Phone`の`Pixel 5`を選んで`Next`ボタンを押下して次の画面に進みます。
+에뮬레이터 작성 화면으로 이동하므로 `Create Device`를 선택하고 `Phone`의 `Pixel 5`를 선택한 뒤, `Next` 버튼을 클릭해서 다음 화면으로 이동합니다.
 
 ![img](images/android_device_hardware.png)
 
-APIは`API 32`を選択します。
+API는 `API 32`를 선택합니다.
 
 ![img](images/android_device_api.png)
 
-確認画面に進むので、`Finish`ボタンを押下して完了です。
+확인 화면으로 진행하므로 `Finish` 버튼을 클릭해서 완료합니다.
 
 ![img](images/android_device_complete.png)
 
-デバイス・エミュレータを取得するため、数GBのデータがダウンロードされます。データのダウンロード後には`Pixel 5 API 32`がエミュレータとして選択可能になっています。
+디바이스/에뮬레이터를 얻기 위해 수 GB의 데이터가 다운로드됩니다. 데이터 다운로두 후에는 `Pixel 5 API 32`를 에뮬레이터로 선택할 수 있게 됩니다.
 
 ![img](images/android_device_pixel5.png)
 
-エミュレータからAIAnimalsを起動します。上部のデバイスで`Pixel 5 API 32`を選び、3角ボタンを押して起動します。
+에뮬레이터터에서 AIAnimals를 기동합니다. 위 디바이스에서 `Pixel 5 API 32`를 선택하고, 삼각형 버튼을 눌러서 기동합니다.
 
 ![img](images/android_start_emulator.png)
 
-エミュレータはAndroid Studioの一部として稼働します。エミュレータを稼働している端末にDocker ComposeでバックエンドAPIを起動していれば、エミュレータからDocker ComposeのバックエンドAPIに接続して利用することが可能です。
+에뮬레이터는 Android Studio의 일부로 기동합니다. 에뮬레이터를 기동하는 머신에 Docker Compose로 백엔드 API를 기동하면, 에뮬레이터에서 Docker Compose의 백엔드 API 접속해서 이용할 수 있습니다.
 
-Android StudioのエミュレータでAIAnimalsを起動すると以下のようなログイン画面が表示されます。
+Android Studio 에뮬레이터에서 AIAnimals를 기동하면 다음과 같은 로그인 화면이 표시됩니다.
 
 ![img](images/android_login.png)
 
-ログインユーザとパスワードは以下の初期データJSONファイルの[user.json](dataset/data/user.json)に記載されています。このファイルはAIAnimalsを利用するユーザとして仮に作成したユーザです。どのユーザでもログインし、AIAnimalsを利用することができます。全ユーザで同じ動作になっているため、エミュレータで利用するユーザはどのユーザでも構いません。今回は仮にユーザ名`dog_leigh`、パスワード`password`でログインします。
+로그인 사용자와 비밀번호는 다음 초기 데이터 JSON 파일인 [`user.json`](dataset/data/user.json)에 기재되어 있습니다. 이 파일은 AIAnimals를 사용하는 사용자로서 임의로 작성된 사용자입니다. 이 사용자로도 로그인해서 AIAnimals를 사용할 수 있습니다. 모든 사용자에서 동일한 동작을 제공하므로, 에뮬레이터에서 사용하는 사용자는 어떤 사용자라도 관계없습니다. 여기에서는 가상 사용자명 `dog_leigh`, 비밀번호 `password`로 로그인합니다.
 
-ユーザ名に`dog_leigh`、パスワードに`password`を入力してログインします。最初の画面は動物の一覧画面です。過去に投稿された動物画像はこの画面で検索することができます。検索にはフリーテキスト、動物の種別（ネコ、イヌ）、品種（ラグドール、ノルウェージャンフォレストキャット等）で絞り込み、各種順番を指定して並べ替えることができます。各画像の右下にある数字はこれまで獲得した「いいね」の数です。
+사용자명에 `dog_leigh`, 비밀번호에 `passwrod`를 입력해서 로그인합니다. 최초 화면은 동물 리스트 화면입니다. 과거에 게시된 동물 이미지는 이 화면에서 검색할 수 있습니다. 검색에는 자유 텍스트, 동물의 종별(고양이, 개), 품종(래그돌, 노르웨이 숲 고양이 등)으로 필터링 할 수 있으며, 각종 순서를 지정해서 정렬할 수 있습니다. 각 이미지의 오른쪽 아래에 있는 숫자는 지금까지 얻는 '좋아요'의 숫자입니다.
 
 ![img](images/android_search.png)
 
-たとえば種別で`cat`、品種で`ragdoll`に選択すると、ネコのラグドールに絞り込んで表示します。
+<!-- たとえば種別で`cat`、品種で`ragdoll`に選択すると、ネコのラグドールに絞り込んで表示します。 -->
+
+예를 들어 종별에서 `cat`, 품종에서 `ragdoll`을 선택하면, 래그돌 품종의 고양이로 필터링할 수 있습니다.
 
 ![img](images/android_cat_ragdoll.png)
 
-動物画像を選ぶと、その動物画像の詳細画面に遷移します。右下の数字をタッチすると、「いいね」を追加することができます。
+동물 이미지를 선택하면, 그 동물 이미지의 상세 화면으로 이동합니다. 오른쪽 아래의 숫자를 터치하면 '좋아요'를 추가할 수 있습니다. 
 
 ![img](images/android_ragdoll.png)
 
-動物画像詳細画面を左から右にスワイプすると検索画面に戻ります。
-検索画面右下の「＋」ボタンを押すと、画像を投稿する画面が表示されます。
-ただし、本アプリでは画像投稿機能は実装していません。投稿しようとしても投稿できないことにご注意ください。
-ご自分の画像を投稿したい場合は、ご自分のストレージに画像を保存するよう、アプリケーションとバックエンドを改修してください。
+동물 이미지 상세 화면을 왼쪽에서 오른쪽으로 스와이프하면 검색 화면으로 돌아갑니다. 검색 화면 오른쪽 아래의 '+' 버튼을 클릭하면 이미지를 게시하는 화면이 표시됩니다. 단, 이 애플리케이션에서는 이미지 게시 기능은 구현하지 않았습니다. 실제로는 게시가 되지 않는 점에 주의합니다. 여러분의 이미지를 게시하고 싶을 때는, 여러분의 스토리지에 이미지를 저장할 수 있도록 애플리케이션과 백엔드를 수정하시기 바랍니다.
 
-- 画像URL例：https://storage.googleapis.com/aianimals/images/000da08168194ab19428ec9154863364.jpg
+- 이미지 URL 예시: https://storage.googleapis.com/aianimals/images/000da08168194ab19428ec9154863364.jpg
 
 ![img](images/android_add_animal.png)
 

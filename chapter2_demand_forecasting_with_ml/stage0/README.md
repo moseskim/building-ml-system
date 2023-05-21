@@ -1,17 +1,22 @@
 # Stage 0
 
-Stage0ではローカル環境で飲料品の需要予測モデルを学習、評価、推論します。
+`Stage0`에서는 로컬 환경에서 식료품의 수요 예측 모델을 학습, 평가, 추론합니다.
 
-- 以下のコマンドはすべてローカル端末で実行し、ローカル端末内で起動します。
-- すべてのリソースはDockerコンテナとして起動します。
-- 環境構築およびコマンドの実行はすべてLinuxおよびmacbookで稼働確認しています。
+- 아래의 명령어는 모두 로컬 터미널에서 실행하고, 로컬 터미널 안에서 기동합니다.
+- 모든 리소스는 Docker 컨테이너로 기동합니다.
+- 환경 구축 및 명령어 실행은 모두 Linux 및 macbook에서 기동을 확인했습니다.
 
-## 前提
+## 전제
 
-このREADMEは2021年の第4週に実行することを想定して記述しています。
-実行の対象週は [docker-compose.yaml](./docker-compose.yaml) の`ml`で環境変数で設定している`TARGET_CONFIG_NAME`で指定します。
-指定可能な対象週は[ml/hydra](./ml/hydra/)ディレクトリに用意されているファイルになります。
-[ml/hydra](./ml/hydra/)には以下が用意されています。
+<!-- このREADMEは2021年の第4週に実行することを想定して記述しています。 -->
+<!-- 実行の対象週は [docker-compose.yaml](./docker-compose.yaml) の`ml`で環境変数で設定している`TARGET_CONFIG_NAME`で指定します。 -->
+<!-- 指定可能な対象週は[ml/hydra](./ml/hydra/)ディレクトリに用意されているファイルになります。 -->
+<!-- [ml/hydra](./ml/hydra/)には以下が用意されています。 -->
+
+이 `README`는 2021년 4주차에 실행하는 것을 가정하여 기술했습니다.
+실행 대상 주차는 [`docker-compose.yaml`](./docker-compose.yaml)의 `ml`에 환경 변수로 설정한 `TARGET_CONFIG_NAME`으로 지정합니다.
+지정할 수 있는 대상은 [`ml/hydra`](./ml/hydra/) 디렉터리에 준비되어 있습니다.
+[`ml/hydra`](./ml/hydra/)에서는 다음 내용이 제공됩니다.
 
 ```sh
 2020_52.yaml
@@ -21,32 +26,31 @@ Stage0ではローカル環境で飲料品の需要予測モデルを学習、�
 2021_32.yaml
 ```
 
-
 ## Requirements
 
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Docker compose](https://docs.docker.jp/compose/install.html)
-- makeコマンドの実行環境
+- make 명령어 실행 환경
 
 ## Components
 
-- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 機械学習の学習結果を管理するサーバ。
-- [PostgreSQL database](https://www.postgresql.org/): MLflowのデータを保存するデータベース。
-- ml: 機械学習の学習、評価、推論を実行する。
-- BI: [streamlit](https://streamlit.io/)で構築するBI環境。
+- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝의 학습 결과를 관리하는 서버.
+- [PostgreSQL database](https://www.postgresql.org/): MLflow의 데이터를 저장하는 데이터베이스.
+- ml: 머신러닝 학습, 평가, 추론을 실행한다.
+- BI: [streamlit](https://streamlit.io/)으로 구축한 BI 환경.
 
 ## Getting started
 
-### 1. Dockerイメージのビルド
+### 1. Docker 이미지 빌드
 
-Dockerイメージをビルドします。
+Docker 이미지를 빌드합니다.
 
-- ビルドコマンドは `make build_all` です。
-- なお、ビルド済みのDockerイメージは以下に用意されています。
+- 빌드 명령어는 `make build_all`입니다.
+- 그리고, 빌드를 완료한 Docker 이미지는 다음에서 제공됩니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
-  - `make pull_all` でDockerイメージを取得することができます。
+  - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker buildのログ</summary>
+<details> <summary>Docker build의 로그</summary>
 
 ```sh
 $ make build_all
@@ -124,16 +128,16 @@ Use 'docker scan' to run Snyk tests against images to find vulnerabilities and l
 
 </details>
 
-### 2. 学習
+### 2. 학습
 
-飲料品の需要予測モデルを学習、評価、推論します。
+식료품의 수요 예측 모델을 학습, 평가, 추론합니다.
 
-- `make up` で環境構築および学習、評価、推論が一括して実行されます。
+- `make up`으로 환경 구축 및 학습, 평가, 추론이 일괄 실행됩니다.
 
-<details> <summary>学習のログ</summary>
+<details> <summary>학습 로그</summary>
 
 ```sh
-# 機械学習および管理環境の起動
+# 머신러닝 및 관리 환경 기동
 $ make up
 docker-compose \
 	-f docker-compose.yaml \
@@ -143,14 +147,14 @@ Creating postgres ... done
 Creating mlflow   ... done
 Creating ml       ... done
 
-# 起動したリソースの確認
+# 기동한 리소스 확인
 $ docker ps -a
 CONTAINER ID   IMAGE                                                               COMMAND                  CREATED         STATUS         PORTS                                         NAMES
 45a5fb80c0d2   shibui/building-ml-system:beverage_sales_forecasting_ml_0.0.0       "/bin/sh -c 'sleep 1…"   6 seconds ago   Up 5 seconds                                                 ml
 5aa78dcfd535   shibui/building-ml-system:beverage_sales_forecasting_mlflow_0.0.0   "mlflow server --bac…"   6 seconds ago   Up 6 seconds   0.0.0.0:15000->5000/tcp, :::15000->5000/tcp   mlflow
 9a878ee682b1   postgres:14.3                                                       "docker-entrypoint.s…"   7 seconds ago   Up 6 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp     postgres
 
-# 学習ログ
+# 학습 로그
 $ docker logs -f ml
 [2022-07-17 05:03:04,575][__main__][INFO] - start ml...
 [2022-07-17 05:03:04,575][__main__][INFO] - config: {'name': 'beverage_sales_forecasting', 'jobs': {'data': {'source': 'local', 'path': '/opt/data/data/item_sales_records_train_2021_04.csv', 'target_data': {'date_from': '2017-01-01', 'date_to': '2021-01-18', 'item': 'ALL', 'store': 'ALL', 'region': 'ALL'}, 'train': {'year': 2017, 'week': 1}, 'test': {'year': 2021, 'week': 2}, 'predict': {'year': 2021, 'week': 4, 'items': 'ALL', 'stores': 'ALL'}}, 'model': {'name': 'light_gbm_regression', 'params': {'task': 'train', 'boosting': 'gbdt', 'objective': 'regression', 'num_leaves': 3, 'learning_rate': 0.05, 'feature_fraction': 0.5, 'max_depth': -1, 'num_iterations': 1000000, 'num_threads': 0, 'seed': 1234, 'early_stopping_rounds': 200, 'eval_metrics': 'mse', 'verbose_eval': 1000}}, 'train': {'run': True}, 'predict': {'run': True, 'register': True}}}
@@ -544,18 +548,18 @@ predicted df shape: (100, 6)
 
 </details>
 
-### 3. 学習結果の確認
+### 3. 학습 결과 확인
 
-学習結果はMLfllow tracking serverに記録されています。
-また、streamlitで構築したBI環境を起動することで、評価や推論結果を可視化することができます。
+학습 결과는 MLflow Tracking Server에 기록됩니다.
+그리고 streamlit으로 구축한 BI 환경을 기동해서, 평가나 추론 결과를 가시화할 수 있습니다.
 
-- MLflow tracking serverは `2. 学習` で起動済みです。
-- BI環境は `make run_bi` で起動します。
+- MLFlow Tracking Server는 `2. 학습`에서 이미 기동했습니다.
+- BI 환경은 `make run_bi`로 기동합니다.
 
-<details> <summary>Docker buildのログ</summary>
+<details> <summary>Docker build 로그</summary>
 
 ```sh
-# BI環境の起動
+# BI 환경 기동
 $ make run_bi
 docker build \
 		--platform x86_64 \
@@ -596,8 +600,8 @@ WARNING: The requested image's platform (linux/amd64) does not match the detecte
 08e9a2859722bcdc76e102d0280867f37937dfad2d72cb3c4775cd6936274b3a
 ```
 
-- なお、BIで読み込む販売実績は環境変数`ITEM_SALES_RECORD_FILE`で`/opt/data/data/item_sales_records_train_2021_04.csv`と指定しています。この環境変数で読み込むファイルは[data/data/item_sales_records_train_2021_04.csv](./data/data/item_sales_records_train_2021_04.csv)になります。
-- 異なる期間の販売実績を指定したい場合は[data/data/](./data/data/)ディレクトリ配下にあるファイルを環境変数`ITEM_SALES_RECORD_FILE`に指定してください。
+- 그리고、BI에서 읽은 판매 실정은 환경 변수 `ITEM_SALES_RECORD_FILE`에서 `/opt/data/data/item_sales_records_train_2021_04.csv`로 지정하고 있습니다. 이 환경 변수로 읽은 파일은 [`data/data/item_sales_records_train_2021_04.csv`](./data/data/item_sales_records_train_2021_04.csv)입니다.
+- 다른 시기의 판매 실적을 지정하고 싶을 때는 [`data/data/`](./data/data/) 디렉터리 아래의 파일을 환경 변수 `ITEM_SALES_RECORD_FILE`에 지정하십시오.
 
 </details>
 
@@ -605,21 +609,26 @@ WARNING: The requested image's platform (linux/amd64) does not match the detecte
 
 - URL: http://localhost:15000/
 
-トップページ
+톱 페이지
+
 ![img](images/mlflow_top.png)
 
-学習時のパラメータ
+학습 시의 파라미터
+
 ![img](images/mlflow_params.png)
 
-推論結果
+추론 결과
+
 ![img](images/mlflow_predictions.png)
 
 #### BI by streamlit
 
 - URL: http://localhost:8501
 
-販売実績
+판매 실적
+
 ![img](images/streamlit_sales.png)
 
-販売実績対推論結果の評価
+판매 실적 대 추론 결과의 평가
+
 ![img](images/streamlit_evaluations.png)
