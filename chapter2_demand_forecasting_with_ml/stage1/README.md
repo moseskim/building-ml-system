@@ -1,28 +1,28 @@
 # Stage 1
 
-`Stage1`에서는 Kubernetes 클러스터로 식료품 수요 예측 모델을 학습, 평가, 추론합니다.
+`Stage1`에서는 쿠버네티스 클러스터로 식료품 수요 예측 모델을 학습, 평가, 추론합니다.
 
 - 다음 명령어는 모두 로컬 터미널에서 실행합니다.
-- 모든 리소스는 Kubernetes 클러스트에 배포되어, 기동합니다.
-- 명령어의 실행은 모두 Linux 및 macOS에서 기동을 확인했습니다.
+- 모든 리소스는 쿠버네티스 클러스트에 배포해서 기동합니다.
+- 모든 명령어의 실행은 Linux 및 macOS에서 기동을 확인했습니다.
 
 
 ## 요구사항
 
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Kubernetes](https://kubernetes.io/ko/)
-  - Kubernetes 클러스터에서는 노드 합계로 12cpu 이상, 48GB 이상의 메모리가 필요합니다.
+  - 쿠버네티스 클러스터에서는 노드 합계 12cpu 이상, 48GB 이상의 메모리가 필요합니다.
 - `make` 명령어의 실행 환경
-- [kubectl](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)의 실행 환경
-  - `kubectl`은 [공식 문서](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)를 참조해서 설치하기 바랍니다.
+- [kubectl](https://kubernetes.io/ko/docs/tasks/tools/)의 실행 환경
+  - `kubectl`은 [공식 문서](https://kubernetes.io/ko/docs/tasks/tools/)를 참조해서 설치하기 바랍니다.
 - [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
   - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조해서 설치하기 바랍니다.
 
 ## 컴포넌트
 
-- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝의 학습 결과를 관리하는 서버.
-- [PostgreSQL database](https://www.postgresql.org/): 식료품의 판매 실적 및 MLflow의 데이터를 저장하는 데이터베이스.
-- BI: [streamlit](https://streamlit.io/)으록 구축하는 BI 환경.
+- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝 학습 결과를 관리하는 서버.
+- [PostgreSQL database](https://www.postgresql.org/): 식료품 판매 실적 및 MLflow 데이터를 저장하는 데이터베이스.
+- BI: [streamlit](https://streamlit.io/)으로 구축하는 BI 환경.
 - [Argo Workflows](https://argoproj.github.io/argo-workflows/): 워크플로 실행 환경.
 - 데이터 등록 잡: 정기적으로 판매 실적 데이터를 등록하는 잡. Argo Workflows에서 잡으로 실행된다.
 - 식료품 수요 예측 잡: 정기적으로 식료품의 수요를 예측하는 머신러닝 모델을 학습하고, 추론하는 잡. Argo Workflows에서 잡으로 실행된다.
@@ -34,7 +34,7 @@
 도커 이미지를 빌드합니다.
 
 - 빌드 명령은 `make build_all`입니다.
-- 빌드 완료한 도커 이미지는 다음에더 제공합니다.
+- 빌드 완료한 도커 이미지는 다음에서 제공합니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
   - `make pull_all`로 도커 이미지를 얻을 수 있습니다.
 
@@ -144,17 +144,17 @@ Use 'docker scan' to run Snyk tests against images to find vulnerabilities and l
 
 ### 2. 환경 구축
 
-- Kubernetes 클러스터에 식료품 수요 예측 실행 환경을 구축합니다.
-- Kubernetes 클러스터에 다음을 구축합니다.
+- 쿠버네티스 클러스터에 식료품 수요 예측 실행 환경을 구축합니다.
+- 쿠버네티스 클러스터에 다음을 구축합니다.
   - data namespace: PostgreSQL database를 배포.
   - mlflow namespace: MLflow Tracking Server를 배포.
   - argo namespace: Argo Workflows를 배포.
   - beverage-sales-forecasting namespace: 초기 데이터 등록 잡 및 streamlit을 사용한 BI 환경을 배포.
 
-<details> <summary>Kubernetes 클러스터에서의 환경 구축 로그</summary>
+<details> <summary>쿠버네티스 클러스터에서의 환경 구축 로그</summary>
 
 ```sh
-# Kubernetes 클러스터에 초기 설정 도입
+# 쿠버네티스 클러스터에 초기 설정 도입
 $ make initialize_deployment
 kubectl apply -f /Users/user/book2/building-ml-system/chapter2_demand_forecasting_with_ml/stage1/infrastructure/manifests/kube_system/pdb.yaml
 poddisruptionbudget.policy/event-exporter-gke created
@@ -316,14 +316,14 @@ service/mlflow   ClusterIP   10.36.5.157   <none>        5000/TCP   15m
 
 </details>
 
-### 3. Kubernetes 클러스터에 구축한 환경에 접속
+### 3. 쿠버네티스 클러스터에 구축한 환경에 접속
 
-- Kubernets 클러스트에 구축한 BI 환경, MLflow Tracking Server, Argo Workflows의 각 콘솔에는 `port-forward`를 실행해서 접속합니다.
+- 쿠버네티스 클러스터에 구축한 BI 환경, MLflow Tracking Server, Argo Workflows의 각 콘솔에는 `port-forward`를 실행해서 접속합니다.
 - `port-forward` 명령은 [`./infrastructure/port_forward.sh`](./infrastructure/port_forward.sh)에서 제공합니다.
 
-<details> <summary>Kubernetes 클러스터의 각종 리소스에 접속하는 port-forward</summary>
+<details> <summary>쿠버네티스 클러스터의 각종 리소스에 접속하는 port-forward</summary>
 
-```sh
+```shell
 # ./infrastructure/port_forward.shの内容
 $ cat ./infrastructure/port_forward.sh
 #!/bin/sh
@@ -345,16 +345,16 @@ user     52204   0.0  0.1 409278704  45680 s003  S     3:06PM   0:00.20 kubectl 
 
 </details>
 
-### 4. 학습 결과 실행\
+### 4. 학습 결과 실행
 
-- 식료품의 수요 예측 머신러닝은 Argo Workflows에 정기 실행되는 잡으로 등록합니다.
-- 접속하기 위해 사전에 `port-forward`를 해야 합니다.
+- 식료품 수요 예측 머신러닝은 Argo Workflows에 정기 실행되는 잡으로 등록합니다.
+- 접속하기 위해서는 사전에 `port-forward`를 해야 합니다.
 - [`env`](./env)에 기재되어 있는 환경 변수를 콘솔에 등록해야 합니다.
 - 잡의 등록 명령어는 `make deploy_job`입니다.
 
 <details> <summary>학습 잡 등록</summary>
 
-```sh
+```shell
 # 콘솔에 등록되어 있는 환경 변수(일부)
 $ env
 ARGO_SERVER=127.0.0.1:2746
@@ -406,17 +406,17 @@ Argo Workflows에 등록된 cron 리스트
 
 ![img](images/argo_crons.png)
 
-Data registration의 내용.
+데이터 등록(Data registration) 내용.
 
-- `*/10 * * * *`이라는 설정으로 10분마다 1번씩 실행합니다. 원래대로라면 주마다 실행하는 잡이지만, 데모를 위해 10분 간격으로 실행합니다.
+- `*/10 * * * *`의 설정으로 10분마다 1번씩 실행합니다. 원래는 주 단위로 실행해야 하는 잡이지만, 데모 목적으로 10분 간격으로 실행합니다.
 
 ![img](images/argo_data_registration_cron.png)
 
-Data registration 잡 실행.
+데이터 등록 잡 실행.
 
 ![img](images/argo_data_registration_job.png)
 
-Data registration 잡 로그.
+데이터 등록 잡 로그.
 
 ![img](images/argo_data_registration_log.png)
 
@@ -445,7 +445,7 @@ Data registration 잡 로그.
 
 ![img](images/bi_sales.png)
 
-판매 실적 대 추론 결과의 평가
+판매 실적 대 추론 결과 평가
 
 ![img](images/bi_evaluations.png)
 
