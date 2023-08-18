@@ -8,11 +8,6 @@
 
 ## 전제
 
-<!-- このREADMEは2021年の第4週に実行することを想定して記述しています。 -->
-<!-- 実行の対象週は [docker-compose.yaml](./docker-compose.yaml) の`ml`で環境変数で設定している`TARGET_CONFIG_NAME`で指定します。 -->
-<!-- 指定可能な対象週は[ml/hydra](./ml/hydra/)ディレクトリに用意されているファイルになります。 -->
-<!-- [ml/hydra](./ml/hydra/)には以下が用意されています。 -->
-
 이 `README`는 2021년 4주차에 실행하는 것을 가정하여 기술했습니다.
 실행 대상 주차는 [`docker-compose.yaml`](./docker-compose.yaml)의 `ml`에 환경 변수로 설정한 `TARGET_CONFIG_NAME`으로 지정합니다.
 지정할 수 있는 대상은 [`ml/hydra`](./ml/hydra/) 디렉터리에 준비되어 있습니다.

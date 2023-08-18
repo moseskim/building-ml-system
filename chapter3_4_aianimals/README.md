@@ -1,14 +1,14 @@
 # 3, 4장 AIAnimals
 
-이 `README`는 AIAnimals라는 가공의 스마트폰 애플리케이션 및 백엔드 인프라스트럭처를 구축 및 활용하는 방법을 설명합니다.
+이 `README`에서는 AIAnimals이라는 가공의 스마트폰 애플리케이션 및 백엔드 인프라스트럭처를 구축 및 활용하는 방법을 설명합니다.
 
-스마트폰은 Android로 개발했습니다. 스마트폰 애플리케이션을 기동하기 위해서는 Android Studio가 필요합니다. 백엔드 인프라스트럿처는 Docker compose 또는 Kubernetes 클러스터로 기동할 수 있습니다. 단, Docker compose로 기동하는 경우, 머신러닝 관련 컴포넌트를 기동시킬 수 없으므로 주의하기 바랍니다.
+스마트폰 애플리케이션은 Android로 개발했습니다. 스마트폰 애플리케이션을 기동하기 위해서는 Android Studio가 필요합니다. 백엔드 인프라스트럭처는 도커 컴포즈(Docker compose) 또는 쿠버네티스(Kubernetes) 클러스터로 기동할 수 있습니다. 단, 도커 컴포즈로 기동하는 경우에는 머신러닝 관련 컴포넌트를 실행할 수 없으므로 주의합니다.
 
-## Components
+## 컴포넌트
 
 ![img](images/backends.png)
 
-## Requirements
+## 요구 사항
 
 - Android Studio
 - [Docker Engine](https://docs.docker.com/engine/install/)
@@ -21,10 +21,9 @@
 - [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
   - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조하여 설치하기 바랍니다.
 
-
 ## Getting started ~ 백엔드 공통 ~
 
-백엔드는 Docker compose 또는 Kubermetes 클러스터에서 기동시킬 수 있습니다.  다음에서는 Docker compose 및 Kubernetes 클러스터 공통 순서를 설명합니다.
+백엔드는 도커 컴포즈 또는 쿠버네티스 클러스터에서 기동시킬 수 있습니다. 다음에서는 도커 컴포즈 및 쿠버네티스 클러스터에서 공통되는 순서에 관해 설명합니다.
 
 ### 주의점
 
@@ -1160,7 +1159,7 @@ shibuiyusuke     78692   0.0  0.0 408628368   1648 s004  S+    6:01PM   0:00.00 
 
 ![img](images/kibana_login.png)
 
-로긍 니후
+로그인 후
 
 ![img](images/kibana_top.png)
 
@@ -1322,7 +1321,7 @@ API는 `API 32`를 선택합니다.
 
 ![img](images/android_device_pixel5.png)
 
-에뮬레이터터에서 AIAnimals를 기동합니다. 위 디바이스에서 `Pixel 5 API 32`를 선택하고, 삼각형 버튼을 눌러서 기동합니다.
+에뮬레이터에서 AIAnimals를 기동합니다. 위 디바이스에서 `Pixel 5 API 32`를 선택하고, 삼각형 버튼을 눌러서 기동합니다.
 
 ![img](images/android_start_emulator.png)
 
@@ -1337,8 +1336,6 @@ Android Studio 에뮬레이터에서 AIAnimals를 기동하면 다음과 같은 
 사용자명에 `dog_leigh`, 비밀번호에 `passwrod`를 입력해서 로그인합니다. 최초 화면은 동물 리스트 화면입니다. 과거에 게시된 동물 이미지는 이 화면에서 검색할 수 있습니다. 검색에는 자유 텍스트, 동물의 종별(고양이, 개), 품종(래그돌, 노르웨이 숲 고양이 등)으로 필터링 할 수 있으며, 각종 순서를 지정해서 정렬할 수 있습니다. 각 이미지의 오른쪽 아래에 있는 숫자는 지금까지 얻는 '좋아요'의 숫자입니다.
 
 ![img](images/android_search.png)
-
-<!-- たとえば種別で`cat`、品種で`ragdoll`に選択すると、ネコのラグドールに絞り込んで表示します。 -->
 
 예를 들어 종별에서 `cat`, 품종에서 `ragdoll`을 선택하면, 래그돌 품종의 고양이로 필터링할 수 있습니다.
 
