@@ -12,16 +12,16 @@
 
 - Android Studio
 - [Docker Engine](https://docs.docker.com/engine/install/)
-- [Docker compose](https://docs.docker.jp/compose/install.html)
+- [Docker compose](https://docs.docker.com/compose/install/)
 - [Kubernetes](https://kubernetes.io/ko/)
-  - Kubernetes 클러스터는 노드 합계 48cpu이상, 128GB 이상의 메모리가 필요합니다.
-- make 명령어 실행 환경
+  - 쿠버네티스 클러스터는 노드 합계 48cpu이상, 128GB 이상의 메모리가 필요합니다.
+- `make`` 명령어 실행 환경
 - [kubectl](https://kubernetes.io/ko/docs/tasks/tools/#kubectl)의 실행 환경
   - kubectl은 [공식 문서](https://kubernetes.io/ko/docs/tasks/tools/#kubectl)를 참조하여 설치하기 바랍니다.
 - [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
   - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조하여 설치하기 바랍니다.
 
-## Getting started ~ 백엔드 공통 ~
+## 시작하기 \~백엔드 공통\~
 
 백엔드는 도커 컴포즈 또는 쿠버네티스 클러스터에서 기동시킬 수 있습니다. 다음에서는 도커 컴포즈 및 쿠버네티스 클러스터에서 공통되는 순서에 관해 설명합니다.
 
@@ -29,15 +29,15 @@
 
 - 백엔드에서 기동하는 데이털 레이어(Postgres 데이터베이스, RabbitMQ, Redis)는 영속화하지 않습니다. 따라서, 컨테이너를 재기동하면 데이터가 사라질 가능성이 있습니다. 본 프로그램은 샘플 시스템으로서 AIAnimals를 기동시키는 것을 목적으로 합니다. 프러덕션 시스템에서 같은 데이터 레이어를 배포할 때는 데이터를 영속화하는 구성으로 구축해야 하므로 주의하기 바랍니다.
 
-### 1. Docker 이미지 빌드
+### 1. 도커 이미지 빌드
 
-- 백엔드에서 사용하는 Docker 이미지를 빌드합니다.
+- 백엔드에서 사용하는 도커 이미지를 빌드합니다.
 - 빌드 명령은 `make build_all`입니다.
-- 그리고 빌드를 완ㅇ료한 Docker 이미지는 다음에서 제공합니다.
+- 빌드 완료한 도커 이미지는 다음에서 제공합니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
   - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker build 로그</summary>
+<details> <summary>도커 build 로그</summary>
 
 ```sh
 $ make build_all
@@ -512,11 +512,11 @@ Docker compose로 백엔드를 기동시키는 방법을 설명합니다. Docker
 
 ### 1. 백엔드 기동
 
-Docker compose로 백엔드를 기동합니다. 기동 명령어는 `make up`입니다.
+도커 컴포즈로 백엔드를 기동합니다. 기동 명령어는 `make up`입니다.
 
-<details> <summary>Docker compose 기동</summary>
+<details> <summary>도커 컴포즈 기동</summary>
 
-```sh
+```shell
 $ make up
 docker-compose \
 		-f docker-compose.yaml \
@@ -534,9 +534,9 @@ Creating api                   ... done
 
 </details>
 
-Docker compose을 사용해 기동한 각종 Docker 컨테이너를 확인합니다.
+도커 컴포즈를 사용해 기동한 각종 도커 컨테이너를 확인합니다.
 
-<details> <summary>기동한 Docker 컨테이너</summary>
+<details> <summary>기동한 도커 컨테이너</summary>
 
 ```sh
 $ docker ps -a
@@ -555,19 +555,19 @@ e151b271203d   redis:latest                                               "docke
 
 기동한 컨테이너의 역할은 다음과 같습니다.
 
-- postgres: 데이터베이스
-- es: ElasticSearch을 사용한 검색 인프라스트럭처
-- kibana: ElasticSearch을 위한 콘솔
-- redis: Redis를 사용한 캐시 인프라스트럭처
-- rabbitmq: RabbitMQ을 사용한 메시지 인프라스트럭처
-- initial_data_registry: 초기 데이터 등록 배치(데이터 등록 후 정지)
-- search_registry: 검색 데이터 등록 배치
+- `postgres`: 데이터베이스
+- `es`: ElasticSearch을 사용한 검색 인프라스트럭처
+- `kibana`: ElasticSearch을 위한 콘솔
+- `redis`: Redis를 사용한 캐시 인프라스트럭처
+- `rabbitmq`: RabbitMQ을 사용한 메시지 인프라스트럭처
+- `initial_data_registry`: 초기 데이터 등록 배치(데이터 등록 후 정지)
+- `search_registry`: 검색 데이터 등록 배치
 
 API등을 통한 검색을 사용하기 위해서는 데이터베이스에 데이터가 등록되어 있어야 합니다. 데이터 등록은 `initial_data_registiry`에서 실행됩니다. 데이터 등록 로그는 다음과 같습니다.
 
 <details> <summary>initial_data_registry 컨테이너 로그</summary>
 
-```sh
+```shell
 $ docker logs initial_data_registry
 [2022-07-17 07:15:59,519] [INFO] [src.job.abstract_job:362] run initialize database
 [2022-07-17 07:15:59,522] [INFO] [src.job.abstract_job:79] create table: animal_categories
@@ -588,7 +588,7 @@ $ docker logs initial_data_registry
 [2022-07-17 07:15:59,634] [INFO] [src.job.abstract_job:85] done create table: animals
 [2022-07-17 07:15:59,635] [INFO] [src.job.abstract_job:79] create table: likes
 
-... <中略> ...
+... <중략> ...
 
 [2022-07-17 07:18:36,797] [INFO] [src.usecase.access_log_usecase:95] bulk register access log: 94800 to 95000
 [2022-07-17 07:18:36,904] [INFO] [src.usecase.access_log_usecase:95] bulk register access log: 95000 to 95200
@@ -611,7 +611,7 @@ $ docker logs search_registry
 [2022-07-17 07:17:07,311] [INFO] [src.infrastructure.search:85] register index animal with body {'settings': {'analysis': {'analyzer': {'kuromoji_analyzer': {'type': 'custom', 'char_filter': ['icu_normalizer'], 'tokenizer': 'kuromoji_tokenizer', 'filter': ['kuromoji_baseform', 'kuromoji_part_of_speech', 'ja_stop', 'kuromoji_number', 'kuromoji_stemmer']}}}}, 'mappings': {'properties': {'name': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'description': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'animal_category_name_en': {'type': 'text'}, 'animal_category_name_ja': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'animal_subcategory_name_en': {'type': 'text'}, 'animal_subcategory_name_ja': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'user_handle_name': {'type': 'text'}, 'like': {'type': 'integer'}, 'created_at': {'type': 'date'}}}}
 [2022-07-17 07:17:07,648] [INFO] [src.infrastructure.search:90] done register index animal with body {'settings': {'analysis': {'analyzer': {'kuromoji_analyzer': {'type': 'custom', 'char_filter': ['icu_normalizer'], 'tokenizer': 'kuromoji_tokenizer', 'filter': ['kuromoji_baseform', 'kuromoji_part_of_speech', 'ja_stop', 'kuromoji_number', 'kuromoji_stemmer']}}}}, 'mappings': {'properties': {'name': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'description': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'animal_category_name_en': {'type': 'text'}, 'animal_category_name_ja': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'animal_subcategory_name_en': {'type': 'text'}, 'animal_subcategory_name_ja': {'type': 'text', 'analyzer': 'kuromoji_analyzer'}, 'user_handle_name': {'type': 'text'}, 'like': {'type': 'integer'}, 'created_at': {'type': 'date'}}}}
 
-...<中略>...
+...<중략>...
 
 [2022-07-17 07:20:55,238] [INFO] [src.usecase.animal_usecase:219] registered: 1a5cbae592324427b4890d0b1a5483bd
 [2022-07-17 07:20:55,240] [INFO] [src.usecase.animal_usecase:224] consumed data: {'id': '64e687b30a584f71b3dfa6bcc629284a'}
@@ -633,9 +633,9 @@ $ docker logs search_registry
 
 ### 2. 환경 삭제
 
-Docker compose로 기동한 백엔드는 `make down`으로 삭제할 수 있습니다.
+도커 컴포즈로 기동한 백엔드는 `make down`으로 삭제할 수 있습니다.
 
-<details> <summary>Docker compose 정지</summary>
+<details> <summary>도커 컴포즈 정지</summary>
 
 ```sh
 $ make down
@@ -662,23 +662,23 @@ Removing network aianimals
 
 </details>
 
-## Getting started ~ Kubernetes 클러스터 ~
+## 시작하기 \~쿠버네티스 클러스터\~
 
-Kubernetes 클러스터로 백엔드를 기동하는 방법을 설명합니다.
-Kubernetes 클러스터로는 머신러닝을 포함한 모든 기능을 기동할 수 있습니다.
+쿠버네티스 클러스터로 백엔드를 기동하는 방법을 설명합니다.
+쿠버네티스 클러스터를 사용하면 머신러닝을 포함한 모든 기능을 기동할 수 있습니다.
 
 ### 1. 백엔드 구축
 
-Kubernetes 클러스터에 백엔드 인프라스트럭처를 구축하는 순서를 설명합니다. 다음 명령을 실행합니다.
+쿠버네티스 클러스터에 백엔드 인프라스트럭처를 구축하는 순서를 설명합니다. 다음 명령을 실행합니다.
 - `make initialize_deployment`: namespace 등의 배포
 - `make deploy_infra`: 인프라스트럭처 계열 리소스 배포
 - `make deploy_init`: 공통 도구 배포
 - `make deploy_base`: API 및 배치 배포
 
 
-<details> <summary>Kubernetesクラスターにバックエンドを構築</summary>
+<details> <summary>쿠버네티스 클러스터에 백엔드 구축</summary>
 
-```sh
+```shell
 # 각종 namespace 배포
 $ make initialize_deployment
 kubectl apply -f ~/building-ml-system/chapter3_4_aianimals/infrastructure/manifests/kube_system/pdb.yaml
@@ -842,7 +842,7 @@ deployment.apps/animal-feature-registry-registration created
 
 배포한 리소스 확인
 
-<details> <summary>배포한 Kubernetes 리소스 리스트</summary>
+<details> <summary>배포한 쿠버네티스 리소스 리스트</summary>
 
 ```sh
 # namespace 리스트
@@ -979,16 +979,16 @@ service/pushgateway   ClusterIP   10.36.14.110   <none>        9091/TCP   5m22s
 ### 2. 위반 감지 시스템 배포
 
 위반 감지 시스템을 구축합니다. 위반 감지 시스템은 다음과 같이 구성됩니다.
-- registry: 위반을 데이터베이스에 등록하는 비동기 인프라스트럭처
-- no-animal-violation-proxy: '동물이 찍혀있지 않다'는 위반을 감지하기 위한 프록시
-- no-animal-violation-serving: '동물이 찍혀있지 않다'는 위반 감지용 추론기
-- violation-detection-portal: 위반 감지 결과를 열람, 관리하는 포털 사이트
+- `registry`: 위반을 데이터베이스에 등록하는 비동기 인프라스트럭처
+- `no-animal-violation-proxy`: '동물이 찍혀있지 않다'는 위반을 감지하기 위한 프록시
+- `no-animal-violation-serving`: '동물이 찍혀있지 않다'는 위반 감지용 추론기
+- `violation-detection-portal`: 위반 감지 결과를 열람, 관리하는 포털 사이트
 
-no-animal-violation-serving으로 기동한다.
-。
+`no-animal-violation-serving`으로 기동한다.
+
 위반 감지 시스템은 `make deploy_violation_detections`로 구축할 수 있습니다.
 
-<details> <summary>위반 감시 시스템 구축</summary>
+<details> <summary>위반 감지 시스템 구축</summary>
 
 ```sh
 # 위반 감지 시스템 구축
@@ -1009,10 +1009,10 @@ deployment.apps/violation-detection-portal created
 service/violation-detection-portal created
 ```
 
-構築した違反検知システムを確認します。
+구축한 위반 감지 시스템을 확인합니다
 
-```sh
-# 違反検知システムのKubernetesリソース
+```shell
+# 위반 감지 시스템의 쿠버네티스 리소스
 $ kubectl -n violation-detection get pods,deploy,svc
 NAME                                               READY   STATUS    RESTARTS   AGE
 pod/no-animal-violation-proxy-7cc55cdc54-mdt6t     1/1     Running   0          3m15s
@@ -1086,7 +1086,7 @@ service/similar-image-search-proxy created
 
 구축한 검색 시스템을 확인합니다.
 
-```sh
+```shell
 $ kubectl -n search get pods,deploy,svc
 NAME                                                READY   STATUS    RESTARTS   AGE
 pod/learn-to-rank-ab-test-proxy-565db87c97-488ns    1/1     Running   0          2m1s
@@ -1115,7 +1115,7 @@ service/similar-image-search-serving    ClusterIP   10.36.12.250   <none>       
 
 ### 4. 각 리소스로의 접속
 
-Kubernetes 클러스터에 배포한 각종 리소스 중 웹 콘솔 등의 인터페이스를 가진 리소스에는 `port-forward`로 접속할 수 있습니다.
+쿠버네티스 클러스터에 배포한 각종 리소스 중 웹 콘솔 등의 인터페이스를 가진 리소스에는 `port-forward`로 접속할 수 있습니다.
 
 <details> <summary>port-forward로 각 리소스에 접속</summary>
 
@@ -1154,8 +1154,8 @@ shibuiyusuke     78692   0.0  0.0 408628368   1648 s004  S+    6:01PM   0:00.00 
 
 - URL: https://localhost:5601/login
 - 다음으로 로그인할 수 있습니다.
-  - user: elastic_user
-  - password: password
+  - user: `elastic_user`
+  - password: `password`
 
 ![img](images/kibana_login.png)
 
@@ -1200,7 +1200,7 @@ Argo Workflows에서는 다음 잡이 정기적으로 실행되도록 등록되�
 
 <details> <summary>Argo Workflows로의 잡 등록</summary>
 
-```sh
+```shell
 # 콘솔에 등록되어 있는 환경 변수(일부)
 $ env
 ARGO_SERVER=127.0.0.1:2746
@@ -1263,9 +1263,9 @@ NextScheduledTime:             Mon Jul 18 21:00:00 +0900 (1 day from now) (assum
 
 ### 6. 환경 삭제
 
-Kubernetes 클러스터에 구축한 환경은 `make delete_namespaces`로 삭제할 수 있습니다.
+쿠버네티스 클러스터에 구축한 환경은 `make delete_namespaces`로 삭제할 수 있습니다.
 
-<details> <summary>Kubernetes 클러스터에 구축한 환경 삭제</summary>
+<details> <summary>쿠버네티스 클러스터에 구축한 환경 삭제</summary>
 
 ```sh
 $ make delete_namespaces
@@ -1291,10 +1291,12 @@ namespace "aianimals" deleted
 
 </details>
 
-## Getting started ~ Android 스마트폰 애플리케이션 AIAnimals 기동 ~
+## 시작하기 \~Android 스마트폰 애플리케이션 AIAnimals 기동\~
 
 Android 스마트폰 애플리케이션 AIAnimals의 기동 방법을 설명합니다.
-기동은 Andorid Studio에서 실행합니다.
+
+Andorid Studio에서 실행합니다.
+
 Android Studio에서는 개발 중인 애플리케이션을 실행하기 위한 에뮬레이터를 제공하며, AIAnimal도 에뮬레이터에서 기동을 확인합니다.
 
 먼저 Android Studio를 열고 AIAnimals 프로젝트를 선택합니다.
@@ -1333,11 +1335,11 @@ Android Studio 에뮬레이터에서 AIAnimals를 기동하면 다음과 같은 
 
 로그인 사용자와 비밀번호는 다음 초기 데이터 JSON 파일인 [`user.json`](dataset/data/user.json)에 기재되어 있습니다. 이 파일은 AIAnimals를 사용하는 사용자로서 임의로 작성된 사용자입니다. 이 사용자로도 로그인해서 AIAnimals를 사용할 수 있습니다. 모든 사용자에서 동일한 동작을 제공하므로, 에뮬레이터에서 사용하는 사용자는 어떤 사용자라도 관계없습니다. 여기에서는 가상 사용자명 `dog_leigh`, 비밀번호 `password`로 로그인합니다.
 
-사용자명에 `dog_leigh`, 비밀번호에 `passwrod`를 입력해서 로그인합니다. 최초 화면은 동물 리스트 화면입니다. 과거에 게시된 동물 이미지는 이 화면에서 검색할 수 있습니다. 검색에는 자유 텍스트, 동물의 종별(고양이, 개), 품종(래그돌, 노르웨이 숲 고양이 등)으로 필터링 할 수 있으며, 각종 순서를 지정해서 정렬할 수 있습니다. 각 이미지의 오른쪽 아래에 있는 숫자는 지금까지 얻는 '좋아요'의 숫자입니다.
+사용자명에 `dog_leigh`, 비밀번호에 `passwrod`를 입력해서 로그인합니다. 최초 화면은 동물 리스트 화면입니다. 과거에 게시된 동물 이미지는 이 화면에서 검색할 수 있습니다. 검색에는 자유 텍스트, 동물의 종별(고양이, 개), 품종(랙돌, 노르웨이 숲 고양이 등)으로 필터링 할 수 있으며, 각종 순서를 지정해서 정렬할 수 있습니다. 각 이미지의 오른쪽 아래에 있는 숫자는 지금까지 얻는 '좋아요'의 숫자입니다.
 
 ![img](images/android_search.png)
 
-예를 들어 종별에서 `cat`, 품종에서 `ragdoll`을 선택하면, 래그돌 품종의 고양이로 필터링할 수 있습니다.
+예를 들어 종별에서 `cat`, 품종에서 `ragdoll`을 선택하면 랙돌 품종의 고양이로 필터링할 수 있습니다.
 
 ![img](images/android_cat_ragdoll.png)
 
@@ -1345,7 +1347,7 @@ Android Studio 에뮬레이터에서 AIAnimals를 기동하면 다음과 같은 
 
 ![img](images/android_ragdoll.png)
 
-동물 이미지 상세 화면을 왼쪽에서 오른쪽으로 스와이프하면 검색 화면으로 돌아갑니다. 검색 화면 오른쪽 아래의 '+' 버튼을 클릭하면 이미지를 게시하는 화면이 표시됩니다. 단, 이 애플리케이션에서는 이미지 게시 기능은 구현하지 않았습니다. 실제로는 게시가 되지 않는 점에 주의합니다. 여러분의 이미지를 게시하고 싶을 때는, 여러분의 스토리지에 이미지를 저장할 수 있도록 애플리케이션과 백엔드를 수정하시기 바랍니다.
+동물 이미지 상세 화면을 왼쪽에서 오른쪽으로 스와이프하면 검색 화면으로 돌아갑니다. 검색 화면 오른쪽 아래의 '+' 버튼을 클릭하면 이미지를 게시하는 화면이 표시됩니다. 단, 이 애플리케이션에서는 이미지 게시 기능은 구현하지 않았습니다. 실제로는 게시가 되지 않으므로 주의합니다. 여러분이 가진 이미지를 게시하고 싶을 때는 스토리지에 이미지를 저장할 수 있도록 애플리케이션과 백엔드를 수정하시기 바랍니다.
 
 - 이미지 URL 예시: https://storage.googleapis.com/aianimals/images/000da08168194ab19428ec9154863364.jpg
 

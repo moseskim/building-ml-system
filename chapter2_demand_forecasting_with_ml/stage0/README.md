@@ -45,7 +45,7 @@
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
   - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker build의 로그</summary>
+<details> <summary>도커 build 로그</summary>
 
 ```shell
 $ make build_all
@@ -552,7 +552,7 @@ streamlit으로 구축한 BI 환경을 기동해서, 평가나 추론 결과를 
 - MLFlow Tracking Server는 `2. 학습`에서 이미 기동했습니다.
 - BI 환경은 `make run_bi`로 기동합니다.
 
-<details> <summary>Docker build 로그</summary>
+<details> <summary>도커 build 로그</summary>
 
 ```shell
 # BI 환경 기동
