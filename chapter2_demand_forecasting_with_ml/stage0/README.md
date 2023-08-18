@@ -2,18 +2,18 @@
 
 `Stage0`에서는 로컬 환경에서 식료품의 수요 예측 모델을 학습, 평가, 추론합니다.
 
-- 아래의 명령어는 모두 로컬 터미널에서 실행하고, 로컬 터미널 안에서 기동합니다.
-- 모든 리소스는 Docker 컨테이너로 기동합니다.
-- 환경 구축 및 명령어 실행은 모두 Linux 및 macbook에서 기동을 확인했습니다.
+- 아래의 모든 명령어는 로컬 터미널에서 실행하고, 로컬 터미널 안에서 기동합니다.
+- 모든 리소스는 도커 컨테이너로 기동합니다.
+- 환경 구축 및 명령어 실행은 모두 Linux 및 macOS에서 기동을 확인했습니다.
 
 ## 전제
 
 이 `README`는 2021년 4주차에 실행하는 것을 가정하여 기술했습니다.
-실행 대상 주차는 [`docker-compose.yaml`](./docker-compose.yaml)의 `ml`에 환경 변수로 설정한 `TARGET_CONFIG_NAME`으로 지정합니다.
-지정할 수 있는 대상은 [`ml/hydra`](./ml/hydra/) 디렉터리에 준비되어 있습니다.
-[`ml/hydra`](./ml/hydra/)에서는 다음 내용이 제공됩니다.
 
-```sh
+실행 대상 주차는 [`docker-compose.yaml`](./docker-compose.yaml)의 `ml`에 환경 변수로 설정한 `TARGET_CONFIG_NAME`으로 지정합니다. 지정할 수 있는 대상은 [`ml/hydra`](./ml/hydra/) 디렉터리에 준비되어 있습니다.
+[`ml/hydra`](./ml/hydra/) 디렉터리에서는 다음을 제공합니다.
+
+```shell
 2020_52.yaml
 2021_03.yaml
 2021_04.yaml
@@ -21,33 +21,33 @@
 2021_32.yaml
 ```
 
-## Requirements
+## 요구사항
 
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Docker compose](https://docs.docker.jp/compose/install.html)
-- make 명령어 실행 환경
+- `make` 명령어 실행 환경
 
-## Components
+## 컴포넌트
 
-- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝의 학습 결과를 관리하는 서버.
-- [PostgreSQL database](https://www.postgresql.org/): MLflow의 데이터를 저장하는 데이터베이스.
+- [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝 학습 결과를 관리하는 서버.
+- [PostgreSQL database](https://www.postgresql.org/): MLflow 데이터를 저장하는 데이터베이스.
 - ml: 머신러닝 학습, 평가, 추론을 실행한다.
 - BI: [streamlit](https://streamlit.io/)으로 구축한 BI 환경.
 
-## Getting started
+## 시작하기
 
-### 1. Docker 이미지 빌드
+### 1. 도커 이미지 빌드
 
-Docker 이미지를 빌드합니다.
+도커 이미지를 빌드합니다.
 
 - 빌드 명령어는 `make build_all`입니다.
-- 그리고, 빌드를 완료한 Docker 이미지는 다음에서 제공됩니다.
+- 빌드 완료한 도커 이미지는 다음에서 제공합니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
   - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
 
 <details> <summary>Docker build의 로그</summary>
 
-```sh
+```shell
 $ make build_all
 docker build \
 		--platform x86_64 \
@@ -125,13 +125,13 @@ Use 'docker scan' to run Snyk tests against images to find vulnerabilities and l
 
 ### 2. 학습
 
-식료품의 수요 예측 모델을 학습, 평가, 추론합니다.
+식료품 수요 예측 모델을 학습, 평가, 추론합니다.
 
 - `make up`으로 환경 구축 및 학습, 평가, 추론이 일괄 실행됩니다.
 
 <details> <summary>학습 로그</summary>
 
-```sh
+```shell
 # 머신러닝 및 관리 환경 기동
 $ make up
 docker-compose \
@@ -546,14 +546,15 @@ predicted df shape: (100, 6)
 ### 3. 학습 결과 확인
 
 학습 결과는 MLflow Tracking Server에 기록됩니다.
-그리고 streamlit으로 구축한 BI 환경을 기동해서, 평가나 추론 결과를 가시화할 수 있습니다.
+
+streamlit으로 구축한 BI 환경을 기동해서, 평가나 추론 결과를 가시화할 수 있습니다.
 
 - MLFlow Tracking Server는 `2. 학습`에서 이미 기동했습니다.
 - BI 환경은 `make run_bi`로 기동합니다.
 
 <details> <summary>Docker build 로그</summary>
 
-```sh
+```shell
 # BI 환경 기동
 $ make run_bi
 docker build \
@@ -608,7 +609,7 @@ WARNING: The requested image's platform (linux/amd64) does not match the detecte
 
 ![img](images/mlflow_top.png)
 
-학습 시의 파라미터
+학습 시 파라미터
 
 ![img](images/mlflow_params.png)
 
@@ -624,6 +625,6 @@ WARNING: The requested image's platform (linux/amd64) does not match the detecte
 
 ![img](images/streamlit_sales.png)
 
-판매 실적 대 추론 결과의 평가
+판매 실적 대 추론 결과 평가
 
 ![img](images/streamlit_evaluations.png)
