@@ -4,21 +4,21 @@
 
 - 다음 명령어는 모두 로컬 터미널에서 실행합니다.
 - 모든 리소스는 Kubernetes 클러스트에 배포되어, 기동합니다.
-- 명령어의 실행은 모두 Linux 및 macbook에서 기동을 확인했습니다.
+- 명령어의 실행은 모두 Linux 및 macOS에서 기동을 확인했습니다.
 
 
-## Requirements
+## 요구사항
 
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Kubernetes](https://kubernetes.io/ko/)
   - Kubernetes 클러스터에서는 노드 합계로 12cpu 이상, 48GB 이상의 메모리가 필요합니다.
-- make 명령어의 실행 환경
+- `make` 명령어의 실행 환경
 - [kubectl](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)의 실행 환경
-  - kubectl은 [공식 문서](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)를 참조해서 설치하기 바랍니다.
+  - `kubectl`은 [공식 문서](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl/)를 참조해서 설치하기 바랍니다.
 - [argo cli](https://github.com/argoproj/argo-workflows/releases)의 실행 환경
   - argo cli는 [공식 문서](https://github.com/argoproj/argo-workflows/releases)를 참조해서 설치하기 바랍니다.
 
-## Components
+## 컴포넌트
 
 - [MLflow tracking server](https://www.mlflow.org/docs/latest/index.html): 머신러닝의 학습 결과를 관리하는 서버.
 - [PostgreSQL database](https://www.postgresql.org/): 식료품의 판매 실적 및 MLflow의 데이터를 저장하는 데이터베이스.
@@ -27,21 +27,21 @@
 - 데이터 등록 잡: 정기적으로 판매 실적 데이터를 등록하는 잡. Argo Workflows에서 잡으로 실행된다.
 - 식료품 수요 예측 잡: 정기적으로 식료품의 수요를 예측하는 머신러닝 모델을 학습하고, 추론하는 잡. Argo Workflows에서 잡으로 실행된다.
 
-## Getting started
+## 시작하기
 
-### 1. Docker 이미지 빌드
+### 1. 도커 이미지 빌드
 
-Docker 이미지를 빌드합니다.
+도커 이미지를 빌드합니다.
 
 - 빌드 명령은 `make build_all`입니다.
-- 빌드를 완료한 Docker 이미지는 다음에서 제공됩니다.
+- 빌드 완료한 도커 이미지는 다음에더 제공합니다.
   - https://hub.docker.com/repository/docker/shibui/building-ml-system/general
-  - `make pull_all`로 Docker 이미지를 얻을 수 있습니다.
+  - `make pull_all`로 도커 이미지를 얻을 수 있습니다.
 
-<details> <summary>Docker build의 로그</summary>
+<details> <summary>도커 build 로그</summary>
 
-```sh
-# Docker 이미지 빌드
+```shell
+# 도커 이미지 빌드
 $ make build_all
 docker build \
 		--platform x86_64 \
