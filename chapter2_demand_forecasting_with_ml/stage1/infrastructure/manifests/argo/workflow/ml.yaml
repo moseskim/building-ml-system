@@ -3,7 +3,7 @@ kind: CronWorkflow
 metadata:
   generateName: ml-pipeline-
 spec:
-  schedule: "*/10 * * * *" # サンプルとして10分置きに実行。
+  schedule: "*/10 * * * *" # 샘플로 10분 마다 실행한다.
   concurrencyPolicy: "Forbid"
   startingDeadlineSeconds: 0
   workflowSpec:
